@@ -2,6 +2,7 @@ package com.socket.banco.controller.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -15,6 +16,7 @@ import com.socket.banco.dto.TransacaoRestDto;
 import com.socket.banco.model.Saldo;
 import com.socket.banco.model.Transacao;
 import com.socket.banco.repository.SaldoRepository;
+import com.socket.banco.repository.TransacaoRepository;
 import com.socket.tcp.dto.SocketAutorizacaoDto;
 import com.socket.tcp.dto.SocketEntradaDto;
 
@@ -25,9 +27,13 @@ public class SaldoControllerImpl implements SaldoController{
 	private static final String SALDO_INSUFICIENTE = "51";
 	private static final String CONTA_INVALIDA = "14";
 	private static final String ERRO_PROCESSAMENTO = "96";
+	
 	@Autowired
-	private SaldoRepository saldoRepository;
-
+	SaldoRepository saldoRepository;
+	
+	@Autowired
+	TransacaoRepository transacaoRepository;
+	
 	@Override
 	@Transactional
 	public SaldoRestDto consultar(String cardNumber) {
@@ -67,7 +73,8 @@ public class SaldoControllerImpl implements SaldoController{
 			return dto;
 		}
 		if(verificarSaldo(saldo.getAvailableAmount(), socketEntradaDto.getAmount())) {
-			saldo.getAvailableAmount().subtract(socketEntradaDto.getAmount());
+			saldo.setAvailableAmount(saldo.getAvailableAmount().subtract(socketEntradaDto.getAmount()));
+			atualizar(saldo,socketEntradaDto.getAmount());
 			dto.setCode(APROVADA);
 		}else{
 			dto.setCode(SALDO_INSUFICIENTE);
@@ -87,6 +94,16 @@ public class SaldoControllerImpl implements SaldoController{
 
 	private Boolean verificarSaldo(BigDecimal availableAmount, BigDecimal amount) {
 		return availableAmount.compareTo(amount)==1 || availableAmount.compareTo(amount)==0;
+	}
+
+	@Override
+	public SaldoRestDto atualizar(Saldo saldo, BigDecimal saldoRetirado) {
+		Transacao transacao = new Transacao();
+		transacao.setAmount(saldoRetirado);
+		transacao.setData(new Date());
+		List<Transacao> listaTransacao = saldo.getListaTransacao();
+		listaTransacao.add(transacao);
+		return converterToDto(saldoRepository.save(saldo));
 	}
 
 }

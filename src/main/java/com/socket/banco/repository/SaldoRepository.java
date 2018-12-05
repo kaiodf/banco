@@ -12,4 +12,5 @@ public interface SaldoRepository extends JpaRepository<Saldo, Long>{
 
 	@Query("SELECT s FROM Saldo s WHERE LOWER(s.cardNumber) = LOWER(:cardNumber)")
 	Saldo consultar(@Param(value = "cardNumber") String cardNumber);
+	
 }

@@ -1,6 +1,9 @@
 package com.socket.banco.controller;
 
+import java.math.BigDecimal;
+
 import com.socket.banco.dto.SaldoRestDto;
+import com.socket.banco.model.Saldo;
 import com.socket.tcp.dto.SocketAutorizacaoDto;
 import com.socket.tcp.dto.SocketEntradaDto;
 
@@ -25,4 +28,13 @@ public interface SaldoController {
 	 */
 	SocketAutorizacaoDto withdraw(SocketEntradaDto socketEntradaDto);
 
+	
+	/**
+	 * Atualizar.
+	 *
+	 * @param saldo the saldo
+	 * @param saldoRetirado the saldo retirado
+	 * @return the saldo rest dto
+	 */
+	SaldoRestDto atualizar(Saldo saldo, BigDecimal saldoRetirado);
 }

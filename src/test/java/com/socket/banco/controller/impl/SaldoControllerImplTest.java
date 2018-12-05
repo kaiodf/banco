@@ -1,7 +1,6 @@
 package com.socket.banco.controller.impl;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyString;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,6 +47,9 @@ public class SaldoControllerImplTest {
 			{
 				saldoRepository.consultar(anyString);
 				result = criarSaldo();
+				
+				saldoRepository.save(withInstanceOf(Saldo.class));
+				result = criarSaldo();
 			}
 		};
 		
@@ -57,7 +59,7 @@ public class SaldoControllerImplTest {
 	private SocketEntradaDto criarSocketEntradaDto() {
 		SocketEntradaDto dto = new SocketEntradaDto();
 		dto.setAction("withdraw");
-		dto.setAmount(BigDecimal.TEN);
+		dto.setAmount(BigDecimal.ZERO);
 		dto.setCardnumber("123");
 		return dto;
 	}
