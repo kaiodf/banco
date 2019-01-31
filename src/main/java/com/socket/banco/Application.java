@@ -23,7 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @ComponentScan(basePackages = "com.socket.banco")
 @Import({ RestConfiguration.class })
-@EnableSwagger2
+@EnableSwagger2 
 @EnableAutoConfiguration
 public class Application extends SpringBootServletInitializer {
 
